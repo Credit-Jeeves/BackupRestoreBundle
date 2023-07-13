@@ -1,55 +1,53 @@
 <?php
 namespace ENC\Bundle\BackupRestoreBundle\Tests\Factory;
 
+use ENC\Bundle\BackupRestoreBundle\Exception\UnsupportedDbalPlatformException;
+use ENC\Bundle\BackupRestoreBundle\Exception\UnsupportedPlatformException;
 use ENC\Bundle\BackupRestoreBundle\Tests\Factory\TestBackupRestoreFactoryFactory;
+use PHPUnit\Framework\TestCase;
 
-class BackupRestoreFactoryTest extends \PHPUnit_Framework_TestCase
+class BackupRestoreFactoryTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_getBackupInstance_passingNonStringConnectionServiceID_throwsInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $factory = TestBackupRestoreFactoryFactory::create();
         
         $factory->getBackupInstance(123);
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_getBackupInstance_passingAStringWithInvalidConnectionServiceID_throwsInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $factory = TestBackupRestoreFactoryFactory::create();
         
         $factory->getBackupInstance('invalid_service_id');
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_getRestoreInstance_passingNonStringConnectionServiceID_throwsInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $factory = TestBackupRestoreFactoryFactory::create();
         
         $factory->getRestoreInstance(123);
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_getRestoreInstance_passingAStringWithInvalidConnectionServiceID_throwsInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $factory = TestBackupRestoreFactoryFactory::create();
         
         $factory->getRestoreInstance('invalid_service_id');
     }
     
-    /**
-     * @expectedException \ENC\Bundle\BackupRestoreBundle\Exception\UnsupportedPlatformException
-     */
     public function test_getBackupInstance_passingANonSupportedConnectionService_throwsUnsupportedPlatformException()
     {
+        $this->expectException(UnsupportedPlatformException::class);
+
         $unsupportedServiceId = 'unsupported_service';
         $factory = TestBackupRestoreFactoryFactory::create(array(
             $unsupportedServiceId => new \DateTime()
@@ -58,11 +56,10 @@ class BackupRestoreFactoryTest extends \PHPUnit_Framework_TestCase
         $factory->getBackupInstance($unsupportedServiceId);
     }
     
-    /**
-     * @expectedException \ENC\Bundle\BackupRestoreBundle\Exception\UnsupportedDbalPlatformException
-     */
     public function test_getBackupInstance_passingANonSupportedDbalConnectionService_throwsUnsupportedDbalPlatformException()
     {
+        $this->expectException(UnsupportedDbalPlatformException::class);
+
         $dbalConnection = TestBackupRestoreFactoryFactory::getDbalConnectionMock(array(
             'getDatabasePlatform'
         ));
@@ -78,11 +75,10 @@ class BackupRestoreFactoryTest extends \PHPUnit_Framework_TestCase
         $factory->getBackupInstance($dbalConnectionServiceId);
     }
     
-    /**
-     * @expectedException \ENC\Bundle\BackupRestoreBundle\Exception\UnsupportedPlatformException
-     */
     public function test_getRestoreInstance_passingANonSupportedConnectionService_throwsUnsupportedPlatformException()
     {
+        $this->expectException(UnsupportedPlatformException::class);
+
         $unsupportedServiceId = 'unsupported_service';
         $factory = TestBackupRestoreFactoryFactory::create(array(
             $unsupportedServiceId => new \DateTime()
@@ -91,11 +87,10 @@ class BackupRestoreFactoryTest extends \PHPUnit_Framework_TestCase
         $factory->getRestoreInstance($unsupportedServiceId);
     }
     
-    /**
-     * @expectedException \ENC\Bundle\BackupRestoreBundle\Exception\UnsupportedDbalPlatformException
-     */
     public function test_getRestoreInstance_passingANonSupportedDbalConnectionService_throwsUnsupportedDbalPlatformException()
     {
+        $this->expectException(UnsupportedDbalPlatformException::class);
+
         $dbalConnection = TestBackupRestoreFactoryFactory::getDbalConnectionMock(array(
             'getDatabasePlatform'
         ));

@@ -1,18 +1,18 @@
 <?php
 namespace ENC\Bundle\BackupRestoreBundle\Tests\Backup\MongoDB;
 
+use ENC\Bundle\BackupRestoreBundle\Exception\BackupException;
 use ENC\Bundle\BackupRestoreBundle\Factory\BackupRestoreFactory;
 use ENC\Bundle\BackupRestoreBundle\Tests\Backup\TestBackupFactory;
 use ENC\Bundle\BackupRestoreBundle\Tests\Factory\TestBackupFactoryFactory;
+use PHPUnit\Framework\TestCase;
 
-class MongoDBBackupTest extends \PHPUnit_Framework_TestCase
+class MongoDBBackupTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_backupDatabase_passingInvalidDirectory_throwsInvalidArgumentException()
     {
-        $backupInstance = TestBackupFactory::createMock('mongodb', array(
+        $this->expectException(\InvalidArgumentException::class);
+        $backupInstance = TestBackupFactory::getMock('mongodb', array(
             'callVendorBackupTool'
         ));
         
@@ -24,7 +24,7 @@ class MongoDBBackupTest extends \PHPUnit_Framework_TestCase
         $tmpDir = sys_get_temp_dir();
         $pathToBackupMustBe = $tmpDir.'/dump';
         
-        $backupInstance = TestBackupFactory::createMock('mongodb', array(
+        $backupInstance = TestBackupFactory::getMock('mongodb', array(
             'doCallVendorBackupTool'
         ));
         $backupInstance->expects($this->once())
@@ -37,15 +37,14 @@ class MongoDBBackupTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($pathToBackup, $pathToBackupMustBe);
     }
     
-    /**
-     * @expectedException ENC\Bundle\BackupRestoreBundle\Exception\BackupException
-     */
     public function test_callVendorBackupTool_throwsBackupExceptionIfSomethingWentWrong()
     {
+        $this->expectException(BackupException::class);
+
         $tmpDir = sys_get_temp_dir();
         $pathToBackupMustBe = $tmpDir.'/dump';
         
-        $backupInstance = TestBackupFactory::createMock('mongodb', array(
+        $backupInstance = TestBackupFactory::getMock('mongodb', array(
             'doCallVendorBackupTool', 'getLastCommandOutput'
         ));
         $backupInstance->expects($this->once())

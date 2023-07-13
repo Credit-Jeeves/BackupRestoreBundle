@@ -2,31 +2,30 @@
 namespace ENC\Bundle\BackupRestoreBundle\Tests\Common\MongoDB;
 
 use ENC\Bundle\BackupRestoreBundle\Common\MongoDB\MongoDBUtility;
+use PHPUnit\Framework\TestCase;
 
-class MongoDBUtilityTest extends \PHPUnit_Framework_TestCase
+class MongoDBUtilityTest extends TestCase
 {
     protected $utilityInstance;
-    
-    public function setUp()
+
+    protected function setUp(): void
     {
         if (is_null($this->utilityInstance)) {
             $this->utilityInstance = new MongoDBUtility();
         }
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_extractParametersFromServerString_passingANonStringArgument_throwsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->utilityInstance->extractParametersFromServerString(123);
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_extractParametersFromServerString_passingAnInvalidHostStringArgument_throwsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->utilityInstance->extractParametersFromServerString('it_should_start_with_protocol');
     }
     
@@ -36,7 +35,7 @@ class MongoDBUtilityTest extends \PHPUnit_Framework_TestCase
         
         $parameters = $this->utilityInstance->extractParametersFromServerString($serverString);
         
-        $this->assertInternalType('array', $parameters);
+        $this->assertIsArray($parameters);
         $this->assertArrayHasKey('hostname', $parameters);
         $this->assertArrayHasKey('username', $parameters);
         $this->assertArrayHasKey('password', $parameters);
@@ -53,7 +52,7 @@ class MongoDBUtilityTest extends \PHPUnit_Framework_TestCase
         
         $parameters = $this->utilityInstance->extractParametersFromServerString($serverString);
         
-        $this->assertInternalType('array', $parameters);
+        $this->assertIsArray($parameters);
         $this->assertArrayHasKey('hostname', $parameters);
         $this->assertArrayHasKey('username', $parameters);
         $this->assertArrayHasKey('password', $parameters);
@@ -72,7 +71,7 @@ class MongoDBUtilityTest extends \PHPUnit_Framework_TestCase
         
         $parameters = $this->utilityInstance->extractParametersFromServerString($serverString);
         
-        $this->assertInternalType('array', $parameters);
+        $this->assertIsArray($parameters);
         $this->assertArrayHasKey('hostname', $parameters);
         $this->assertArrayHasKey('username', $parameters);
         $this->assertArrayHasKey('password', $parameters);

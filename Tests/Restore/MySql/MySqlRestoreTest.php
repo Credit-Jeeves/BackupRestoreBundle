@@ -1,30 +1,30 @@
 <?php
 namespace ENC\Bundle\BackupRestoreBundle\Tests\Restore\MySql;
 
+use ENC\Bundle\BackupRestoreBundle\Exception\RestoreException;
 use ENC\Bundle\BackupRestoreBundle\Tests\Restore\TestRestoreFactory;
-use ENC\Bundle\BackupRestoreBundle\Exception\FileException;
+use PHPUnit\Framework\TestCase;
 
-class MySqlRestoreTest extends \PHPUnit_Framework_TestCase
+class MySqlRestoreTest extends TestCase
 {
     protected $tmpFile;
-    
-    public function setUp()
+
+    protected function setUp(): void
     {
         $this->tmpFile = $this->createTmpFile();
     }
-    
-    public function tearDown()
+
+    protected function tearDown(): void
     {
         @unlink($this->tmpFile);
         $this->tmpFile = null;
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_restoreDatabase_passingNonStringArgument_throwsInvalidArgumentException()
     {
-        $restoreInstance = TestRestoreFactory::createMock('mysql', array(
+        $this->expectException(\InvalidArgumentException::class);
+
+        $restoreInstance = TestRestoreFactory::getMock('mysql', array(
             'callRestoreVendorTool',
             'doCallRestoreVendorTool'
         ));
@@ -32,12 +32,11 @@ class MySqlRestoreTest extends \PHPUnit_Framework_TestCase
         $restoreInstance->restoreDatabase(123);
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_restoreDatabase_passingInvalidFile_throwsInvalidArgumentException()
     {
-        $restoreInstance = TestRestoreFactory::createMock('mysql', array(
+        $this->expectException(\InvalidArgumentException::class);
+
+        $restoreInstance = TestRestoreFactory::getMock('mysql', array(
             'callRestoreVendorTool',
             'doCallRestoreVendorTool'
         ));
@@ -47,7 +46,9 @@ class MySqlRestoreTest extends \PHPUnit_Framework_TestCase
     
     public function test_restoreDatabase_callsCallVendorBackupToolInternallyWithCorrectArguments()
     {
-        $restoreInstance = TestRestoreFactory::createMock('mysql', array('callVendorRestoreTool'));
+        $this->expectNotToPerformAssertions();
+
+        $restoreInstance = TestRestoreFactory::getMock('mysql', onlyMethods: array('callVendorRestoreTool'));
         $restoreInstance->expects($this->once())
             ->method('callVendorRestoreTool')
             ->with($this->tmpFile);
@@ -55,12 +56,11 @@ class MySqlRestoreTest extends \PHPUnit_Framework_TestCase
         $restoreInstance->restoreDatabase($this->tmpFile);
     }
     
-    /**
-     * @expectedException ENC\Bundle\BackupRestoreBundle\Exception\RestoreException
-     */
     public function test_callVendorRestoreTool_throwsRestoreExceptionIfDoCallVendorRestoreToolProducedErrors()
     {
-        $restoreInstance = TestRestoreFactory::createMock('mysql', array('getLastCommandOutput', 'doCallVendorRestoreTool'));
+        $this->expectException(RestoreException::class);
+
+        $restoreInstance = TestRestoreFactory::getMock('mysql', onlyMethods: ['getLastCommandOutput', 'doCallVendorRestoreTool']);
         $restoreInstance->expects($this->once())
             ->method('getLastCommandOutput')
             ->will($this->returnValue(array()));
