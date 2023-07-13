@@ -2,6 +2,7 @@
 
 namespace ENC\Bundle\BackupRestoreBundle\Tests\Factory;
 
+use Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -33,7 +34,11 @@ class TestBackupRestoreFactoryFactory extends WebTestCase
     public static function getDbalConnectionMock(array $methods = array())
     {
         $instance = new self();
-        
-        return $instance->getMock('Doctrine\DBAL\Connection', $methods, array(), '', false);
+
+        return $instance
+            ->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods($methods)
+            ->getMock();
     }
 }

@@ -1,30 +1,30 @@
 <?php
 namespace ENC\Bundle\BackupRestoreBundle\Tests\Backup\MySql;
 
+use ENC\Bundle\BackupRestoreBundle\Exception\BackupException;
 use ENC\Bundle\BackupRestoreBundle\Factory\BackupRestoreFactory;
 use ENC\Bundle\BackupRestoreBundle\Tests\Backup\TestBackupFactory;
 use ENC\Bundle\BackupRestoreBundle\Tests\Factory\TestBackupFactoryFactory;
+use PHPUnit\Framework\TestCase;
 
-class MySqlBackupTest extends \PHPUnit_Framework_TestCase
+class MySqlBackupTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_backupDatabase_passingInvalidDirectory_throwsInvalidArgumentException()
     {
-        $backupInstance = TestBackupFactory::createMock('mysql', array(
+        $this->expectException(\InvalidArgumentException::class);
+
+        $backupInstance = TestBackupFactory::getMock('mysql', array(
             'callVendorBackupTool'
         ));
         
         $backupInstance->backupDatabase('invalidDir');
     }
     
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_backupDatabase_passingInvalidFilename_throwsInvalidArgumentException()
     {
-        $backupInstance = TestBackupFactory::createMock('mysql', array(
+        $this->expectException(\InvalidArgumentException::class);
+
+        $backupInstance = TestBackupFactory::getMock('mysql', array(
             'callVendorBackupTool'
         ));
         
@@ -39,7 +39,7 @@ class MySqlBackupTest extends \PHPUnit_Framework_TestCase
         
         $connectionMock = TestBackupFactory::getDbalConnectionMock();
         
-        $backupInstance = TestBackupFactory::createMock('mysql', array('callVendorBackupTool'), array($connectionMock));
+        $backupInstance = TestBackupFactory::getMock('mysql', array('callVendorBackupTool'), array($connectionMock));
         $backupInstance->expects($this->once())
             ->method('callVendorBackupTool')
             ->with($fullFilePath);
@@ -53,9 +53,13 @@ class MySqlBackupTest extends \PHPUnit_Framework_TestCase
     {
         $targetDir = sys_get_temp_dir();
         
-        $connectionMock = TestBackupFactory::getDbalConnectionMock();
+        $connectionMock = TestBackupFactory::getDbalConnectionMock(['getDatabase']);
+        $connectionMock
+            ->expects($this->once())
+            ->method('getDatabase')
+            ->willReturn('test-db');
         
-        $backupInstance = TestBackupFactory::createMock('mysql', array('callVendorBackupTool'), array($connectionMock));
+        $backupInstance = TestBackupFactory::getMock('mysql', array('callVendorBackupTool'), array($connectionMock));
         $backupInstance->expects($this->once())
             ->method('callVendorBackupTool');
         
@@ -73,7 +77,7 @@ class MySqlBackupTest extends \PHPUnit_Framework_TestCase
         
         $connectionMock = TestBackupFactory::getDbalConnectionMock();
         
-        $backupInstance = TestBackupFactory::createMock('mysql', array('doCallVendorBackupTool'), array($connectionMock));
+        $backupInstance = TestBackupFactory::getMock('mysql', array('doCallVendorBackupTool'), array($connectionMock));
         $backupInstance->expects($this->once())
             ->method('doCallVendorBackupTool')
             ->with($fullFilePath)
@@ -84,18 +88,17 @@ class MySqlBackupTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($filePath, $fullFilePath);
     }
     
-    /**
-     * @expectedException ENC\Bundle\BackupRestoreBundle\Exception\BackupException
-     */
     public function test_callVendorBackupTool_throwsBackupExceptionIfDoCallVendorBackupToolProducedErrors()
     {
+        $this->expectException(BackupException::class);
+
         $targetDir = sys_get_temp_dir();
         $fileName = 'backup.sql';
         $fullFilePath = $targetDir.DIRECTORY_SEPARATOR.$fileName;
         
         $connectionMock = TestBackupFactory::getDbalConnectionMock();
         
-        $backupInstance = TestBackupFactory::createMock('mysql', array('doCallVendorBackupTool', 'getLastCommandOutput'), array($connectionMock));
+        $backupInstance = TestBackupFactory::getMock('mysql', array('doCallVendorBackupTool', 'getLastCommandOutput'), array($connectionMock));
         $backupInstance->expects($this->once())
             ->method('doCallVendorBackupTool')
             ->with($fullFilePath)

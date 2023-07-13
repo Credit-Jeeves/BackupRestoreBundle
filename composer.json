@@ -5,19 +5,24 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Gustavo Falco",
-            "email": ""
+            "name": "Gustavo Falco"
         }
     ],
 
     "require": {
         "php": ">=5.3.3",
         "ext-mcrypt": "*",
-        "doctrine/dbal": ">=2.0"
+        "doctrine/dbal": ">=2.0",
+        "symfony/framework-bundle": "6.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
     },
 
     "autoload": {
-        "psr-0": { "ENC\\Bundle\\BackupRestoreBundle": "" }
+        "psr-4": { "ENC\\Bundle\\BackupRestoreBundle\\": "" }
     },
-    "target-dir": "ENC/Bundle/BackupRestoreBundle"
+    "autoload-dev": {
+        "psr-4": { "ENC\\Bundle\\BackupRestoreBundle\\Tests\\": "Tests/" }
+    }
 }
