@@ -13,8 +13,9 @@
         <service id="backup_restore.factory" class="%backup_restore.factory.class%">
             <argument type="service" id="service_container" />
         </service>
-        <service id="enc.backup_restore_bundle.restore_command" class="ENC\Bundle\BackupRestoreBundle\Command\RestoreCommand">
+        <service id="enc.backup_restore_bundle.restore_command" class="ENC\Bundle\BackupRestoreBundle\Command\RestoreCommand" autowire="true">
             <tag name="console.command" command="database:restore"/>
+            <argument type="service" id="service_container"/>
         </service>
     </services>
 </container>

@@ -2,17 +2,29 @@
 
 namespace ENC\Bundle\BackupRestoreBundle\Command;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class BackupCommand extends BaseCommand
+class BackupCommand extends Command
 {
-    protected function configure()
+    const COMMAND_NAME = 'database:backup';
+
+    protected ContainerInterface $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct(static::COMMAND_NAME);
+        $this->container = $container;
+    }
+
+    protected function configure(): void
     {
         $this
-            ->setName('database:backup')
+            ->setName(static::COMMAND_NAME)
             ->setDefinition(array(
                 new InputArgument('connection-service-id', InputArgument::REQUIRED, 'The connection service ID of the database from which you want to generate a backup sql file.'),
                 new InputArgument('target-dir', InputArgument::REQUIRED, 'The directory where the backup file will be saved.'),
@@ -49,5 +61,10 @@ EOT
         $connection = $container->get($connectionServiceId);
         
         $output->writeln(sprintf('<comment>></comment> <info>Backup was successfully created in "%s".</info>', $backupPath));
+    }
+
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 }
