@@ -2,17 +2,28 @@
 
 namespace ENC\Bundle\BackupRestoreBundle\Command;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class RestoreCommand extends BaseCommand
+class RestoreCommand extends Command
 {
-    protected function configure()
+    const COMMAND_NAME = 'database:restore';
+
+    protected ContainerInterface $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct(static::COMMAND_NAME);
+        $this->container = $container;
+    }
+
+    protected function configure(): void
     {
         $this
-            ->setName('database:restore')
+            ->setName(static::COMMAND_NAME)
             ->setDefinition(array(
                 new InputArgument('connection-service-id', InputArgument::REQUIRED, 'The connection service ID of the database to which you want to put the restored data.'),
                 new InputArgument('file', InputArgument::REQUIRED, 'The file to restore with.')
@@ -46,5 +57,10 @@ EOT
         $connection = $container->get($connectionServiceId);
         
         $output->writeln('<comment>></comment> <info>Database was restored successfully.</info>');
+    }
+
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 }
