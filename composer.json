@@ -11,7 +11,7 @@
     "require": {
         "php": ">=8.0.2",
         "ext-mcrypt": "*",
-        "doctrine/dbal": ">=2.0",
+        "doctrine/dbal": ">=2.6",
         "symfony/console": "6.*",
         "symfony/framework-bundle": "6.*"
     },

@@ -38,25 +38,26 @@ An example of usage of the command:
 <info>./app/console database:restore "my-connection-service-id" "/path/to/my/backup/file.sql"</info>
 
 EOT
-            )
-        ;
+            );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $container = $this->getContainer();
-        
+
         $factory = $container->get('backup_restore.factory');
         $connectionServiceId = $input->getArgument('connection-service-id');
         $file = $input->getArgument('file');
-        
+
         $restoreInstance = $factory->getRestoreInstance($connectionServiceId);
-        
+
         $restoreInstance->restoreDatabase($file);
-        
+
         $connection = $container->get($connectionServiceId);
-        
+
         $output->writeln('<comment>></comment> <info>Database was restored successfully.</info>');
+
+        return self::SUCCESS;
     }
 
     public function getContainer(): ContainerInterface
