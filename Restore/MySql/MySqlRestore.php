@@ -2,17 +2,12 @@
 
 namespace ENC\Bundle\BackupRestoreBundle\Restore\MySql;
 
+use ENC\Bundle\BackupRestoreBundle\Enum\MySqlParamKey;
 use ENC\Bundle\BackupRestoreBundle\Restore\AbstractRestore;
 use ENC\Bundle\BackupRestoreBundle\Exception\RestoreException;
 
 class MySqlRestore extends AbstractRestore
 {
-    const PARAM_KEY_HOST = 'host';
-    const PARAM_KEY_PORT = 'port';
-    const PARAM_KEY_USER = 'user';
-    const PARAM_KEY_PASSWORD = 'password';
-    const PARAM_KEY_DBNAME = 'dbname';
-
     /**
      * @throws RestoreException
      */
@@ -49,11 +44,11 @@ class MySqlRestore extends AbstractRestore
         $output = array();
         $commandToExecute = sprintf(
             'mysql --host="%s" --port="%s" --user="%s" --password="%s" %s < %s 2>&1;',
-            $params[static::PARAM_KEY_HOST],
-            $params[static::PARAM_KEY_PORT],
-            $params[static::PARAM_KEY_USER],
-            $params[static::PARAM_KEY_PASSWORD],
-            $params[static::PARAM_KEY_DBNAME],
+            $params[MySqlParamKey::PARAM_KEY_HOST],
+            $params[MySqlParamKey::PARAM_KEY_PORT],
+            $params[MySqlParamKey::PARAM_KEY_USER],
+            $params[MySqlParamKey::PARAM_KEY_PASSWORD],
+            $params[MySqlParamKey::PARAM_KEY_DBNAME],
             $file
         );
 
