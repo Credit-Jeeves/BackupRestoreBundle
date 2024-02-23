@@ -64,11 +64,12 @@ class MongoDBUtilityTest extends TestCase
     
     public function test_extractParametersFromServerString_passingStringWithMultipleHostnamesAndUsernameAndPasswords_returnsCorrectParametersForTheFirstHostnameAndUsernameAndPassword()
     {
-        $serverString = 'mongodb://username:password@127.0.0.1:1234,username:password@127.0.0.1:1235';
         $parsedHostnameShouldBe = '127.0.0.1:1234';
         $parsedUsernameShouldBe = 'username';
         $parsedPasswordShouldBe = 'password';
-        
+
+        $serverString = "mongodb://{$parsedUsernameShouldBe}:{$parsedPasswordShouldBe}@127.0.0.1:1234,{$parsedUsernameShouldBe}:{$parsedPasswordShouldBe}@127.0.0.1:1235";
+
         $parameters = $this->utilityInstance->extractParametersFromServerString($serverString);
         
         $this->assertIsArray($parameters);
