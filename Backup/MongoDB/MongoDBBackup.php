@@ -4,6 +4,7 @@ namespace ENC\Bundle\BackupRestoreBundle\Backup\MongoDB;
 use ENC\Bundle\BackupRestoreBundle\Common\MongoDB\MongoDBUtility;
 use ENC\Bundle\BackupRestoreBundle\Backup\AbstractBackup;
 use ENC\Bundle\BackupRestoreBundle\Exception\BackupException;
+use ENC\Bundle\BackupRestoreBundle\Exception\UnsupportedPlatformException;
 
 class MongoDBBackup extends AbstractBackup
 {
@@ -41,6 +42,7 @@ class MongoDBBackup extends AbstractBackup
     
     protected function doCallVendorBackupTool($targetDirectory)
     {
+        throw new UnsupportedPlatformException('Disabled due to a security issue. To enable it please uncomment code.');
         $connection = $this->getConnection();
         $serverParameters = $this->utility->extractParametersFromServerString($connection->getServer());
         $returnValue = '';
@@ -51,9 +53,12 @@ class MongoDBBackup extends AbstractBackup
             ($serverParameters['username'] !== '' ? '--username '.$serverParameters['username'] : ''),
             ($serverParameters['password'] !== '' ? '--password '.$serverParameters['password'] : ''),
             $targetDirectory);
-        
-        $returnLine = exec($commandToExecute, $output, $returnValue);
-        
+
+        /*
+         * This command has been disabled because mongo is unused in the R+B stack and is causing a security issue
+         * to re-enable it  $returnLine = exec($commandToExecute, $output, $returnValue);
+         */
+
         $this->setLastCommandOutput($output);
         
         if ($returnValue !== 0) {

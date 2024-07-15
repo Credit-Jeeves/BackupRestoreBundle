@@ -41,6 +41,7 @@ class MongoDBRestore extends AbstractRestore
     
     protected function doCallVendorRestoreTool($directory)
     {
+        throw new UnsupportedPlatformException('Disabled due to a security issue. To enable it please uncomment code.');
         $connection = $this->getConnection();
         $serverParameters = $this->utility->extractParametersFromServerString($connection->getServer());
         $returnValue = '';
@@ -51,9 +52,12 @@ class MongoDBRestore extends AbstractRestore
             ($serverParameters['username'] !== '' ? '--username '.$serverParameters['username'] : ''),
             ($serverParameters['password'] !== '' ? '--password '.$serverParameters['password'] : ''),
             $directory);
-        
-        $returnLine = exec($commandToExecute, $output, $returnValue);
-        
+
+        /*
+         * This command has been disabled because mongo is unused in the R+B stack and is causing a security issue
+         * to re-enable it  $returnLine = exec($commandToExecute, $output, $returnValue);
+         */
+
         $this->setLastCommandOutput($output);
         
         if ($returnValue !== 0) {
